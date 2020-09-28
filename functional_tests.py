@@ -1,5 +1,6 @@
-import unittest
+import unittest, time
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 class HomePageTest(unittest.TestCase):
 
