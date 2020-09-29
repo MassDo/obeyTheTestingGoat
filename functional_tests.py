@@ -10,6 +10,13 @@ class HomePageTest(unittest.TestCase):
         """
         self.brow = webdriver.Firefox()
 
+    def check_for_row_in_rows_table(self, row_text):
+
+        table = self.brow.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [r.text for r in rows])
+        
+
     def tearDown(self):
         """
         Actions after each test.
@@ -43,10 +50,7 @@ class HomePageTest(unittest.TestCase):
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
 
-        table = self.brow.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        
-        self.assertIn("1: Buy peacock feathers", [r.text for r in rows])
+        self.check_for_row_in_rows_table("1: Buy peacock feathers")       
 
         # There is still a text box inviting her to add another item. She
         # enters "Use peacock feathers to make a fly" (Edith is very methodical)
@@ -55,11 +59,9 @@ class HomePageTest(unittest.TestCase):
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
         # The page updates again, and now shows both items on her list
-        table = self.brow.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
 
-        self.assertIn("1: Buy peacock feathers", [r.text for r in rows])
-        self.assertIn("2: Use peacock feathers to make a fly", [r.text for r in rows])
+        self.check_for_row_in_rows_table("1: Buy peacock feathers")
+        self.check_for_row_in_rows_table("2: Use peacock feathers to make a fly")
         
         # Edith wonders whether the site will remember her list. Then she sees
         # that the site has generated a unique URL for her -- there is some
