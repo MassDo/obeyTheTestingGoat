@@ -8,7 +8,6 @@ from lists.models import Item
 class HomePageTest(TestCase):
 
     def test_uses_home_template(self):
-
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'home.html')
 
@@ -17,8 +16,31 @@ class HomePageTest(TestCase):
         data = {
             "item_text": "Buy peacock feathers"
         })
-        self.assertIn("Buy peacock feathers", response.content.decode())
-        self.assertTemplateUsed(response, "home.html")
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, "Buy peacock feathers")
+
+    def test_redirect_after_a_POST(self):
+        response = self.client.post('/',
+        data = {
+            "item_text": "Buy peacock feathers"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
+
+    def test_only_saves_items_when_necessary(self):
+        self.client.get('/')
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_displays_all_list_items(self):
+        Item.objects.create(text='item_1')
+        Item.objects.create(text='item_2')
+
+        response = self.client.get('/')
+
+        self.assertIn('item_1', response.content.decode())
+        self.assertIn('item_2', response.content.decode())
+
 
 class ItemModelTest(TestCase):
     """

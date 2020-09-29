@@ -58,8 +58,8 @@ class HomePageTest(unittest.TestCase):
         inputbox.send_keys("Use peacock feathers to make a fly")
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-        # The page updates again, and now shows both items on her list
 
+        # The page updates again, and now shows both items on her list
         self.check_for_row_in_rows_table("1: Buy peacock feathers")
         self.check_for_row_in_rows_table("2: Use peacock feathers to make a fly")
         
@@ -71,7 +71,7 @@ class HomePageTest(unittest.TestCase):
 
 
         # Satisfied, she goes back to sleep
-        self.fail('permet de faire échouer le test volontairement. Fini le test !')
+        self.fail('Fini le test !')
         
 if __name__ == '__main__':
     unittest.main()
