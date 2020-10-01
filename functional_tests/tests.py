@@ -15,7 +15,6 @@ class NewVisitorTest(LiveServerTestCase):
         """
         self.brow = webdriver.Firefox()
 
-  
     def wait_for_row_in_list_table(self, row_text):
         start_time = time.time()
         while True:
@@ -29,14 +28,13 @@ class NewVisitorTest(LiveServerTestCase):
                     raise e
                 time.sleep(0.5)
 
-
     def tearDown(self):
         """
         Actions after each test.
         """
         self.brow.quit()
 
-    def test_can_start_a_list_and_retrieve_it_later(self):
+    def test_can_start_a_list_and_retrieve_it_later_one_user(self):
         
         # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
@@ -77,9 +75,54 @@ class NewVisitorTest(LiveServerTestCase):
         # Edith wonders whether the site will remember her list. Then she sees
         # that the site has generated a unique URL for her -- there is some
         # explanatory text to that effect.
-
+        # self.fail('Fini le test !')
         # She visits that URL - her to-do list is still there.
 
 
         # Satisfied, she goes back to sleep
-        self.fail('Fini le test !')
+    
+    def test_multiple_users_can_start_lists_at_different_urls(self):
+        # Edith start a new todo list
+        self.brow.get(self.live_server_url)
+        inputbox = self.brow.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy peacock feathers')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Buy peacock feathers')
+
+        # She notices that the list has a unique URL
+        edith_list_url = self.brow.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
+
+        # Now a new user comes along the site (Francis)
+
+        ## We use a new browser session to make 
+        ## sure that no informations of edith's
+        ## is coming throught from cookies etc ...
+        self.bro.quit()
+        self.bro = webdriver.Firefox()
+
+        # Francis visits the home page.  There is no sign of Edith's
+        # list
+        self.bro.get(live_server_url)
+        page_text = self.brow.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertNotIn('Use peacock feathers to make a fly', page_text)
+
+        # Francis starts a new list by entering a new item. He
+        # is less interesting than Edith...
+        inputbox = self.bro.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy milk')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Buy milk')
+
+        # Francis gets his own URL
+        francis_list_url = self.brow.current_url
+        self.assertRegex(francis_list_url, '/list/.+')
+        self.assertNotEqual(francis_list_url, edith_list_url)
+        
+        # Again, there is no trace of Edith's list
+        ## POST of francis could send post data of edith ?
+        page_text = self.bro.find_element_by_tag_name('body')
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertNotIn('Use peacock feathers to make a fly', page_text)
+        self.assertIn('Buy milk', page_text)
