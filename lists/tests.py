@@ -26,26 +26,30 @@ class HomePageTest(TestCase):
             "item_text": "Buy peacock feathers"
         })
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
 
     def test_only_saves_items_when_necessary(self):
         self.client.get('/')
         self.assertEqual(Item.objects.count(), 0)
 
+   
+class ListViewTest(TestCase):
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response, 'list.html')
+
     def test_displays_all_list_items(self):
         Item.objects.create(text='item_1')
         Item.objects.create(text='item_2')
 
-        response = self.client.get('/')
+        response = self.client.get('/lists/the-only-list-in-the-world/')
 
-        self.assertIn('item_1', response.content.decode())
-        self.assertIn('item_2', response.content.decode())
+        self.assertContains(response, 'item_1')
+        self.assertContains(response, 'item_2')
 
 
-class ItemModelTest(TestCase):
-    """
-    Suite de tests unitaires pour le model Item de l'app lists
-    """
+
+class ItemModelTest(TestCase):    
 
     def test_saving_and_retrieving_items(self):
         first_item = Item()
@@ -63,3 +67,5 @@ class ItemModelTest(TestCase):
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text,'The first item of the list item')
         self.assertEqual(second_saved_item.text, 'Item the second')
+
+

@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 
-MAX_WAIT = 10 
+MAX_WAIT = 3
 
 class NewVisitorTest(LiveServerTestCase):
 
@@ -98,19 +98,19 @@ class NewVisitorTest(LiveServerTestCase):
         ## We use a new browser session to make 
         ## sure that no informations of edith's
         ## is coming throught from cookies etc ...
-        self.bro.quit()
-        self.bro = webdriver.Firefox()
+        self.brow.quit()
+        self.brow = webdriver.Firefox()
 
         # Francis visits the home page.  There is no sign of Edith's
         # list
-        self.bro.get(live_server_url)
+        self.brow.get(self.live_server_url)
         page_text = self.brow.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('Use peacock feathers to make a fly', page_text)
 
         # Francis starts a new list by entering a new item. He
         # is less interesting than Edith...
-        inputbox = self.bro.find_element_by_id('id_new_item')
+        inputbox = self.brow.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('1: Buy milk')
@@ -122,7 +122,7 @@ class NewVisitorTest(LiveServerTestCase):
         
         # Again, there is no trace of Edith's list
         ## POST of francis could send post data of edith ?
-        page_text = self.bro.find_element_by_tag_name('body')
+        page_text = self.brow.find_element_by_tag_name('body')
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('Use peacock feathers to make a fly', page_text)
         self.assertIn('Buy milk', page_text)
