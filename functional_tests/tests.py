@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 
-MAX_WAIT = 3
+MAX_WAIT = 2
 
 class NewVisitorTest(LiveServerTestCase):
 
@@ -117,12 +117,12 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Francis gets his own URL
         francis_list_url = self.brow.current_url
-        self.assertRegex(francis_list_url, '/list/.+')
+        self.assertRegex(francis_list_url, '/lists/.+')
         self.assertNotEqual(francis_list_url, edith_list_url)
         
         # Again, there is no trace of Edith's list
         ## POST of francis could send post data of edith ?
-        page_text = self.brow.find_element_by_tag_name('body')
+        page_text = self.brow.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('Use peacock feathers to make a fly', page_text)
         self.assertIn('Buy milk', page_text)
