@@ -65,8 +65,6 @@ class NewItemViewTest(TestCase):
 
         self.assertRedirects(response, f'/lists/{list_.id}/')
 
-    
-
 
 class ListViewTest(TestCase):
     def test_uses_list_template(self):
@@ -101,7 +99,6 @@ class ListViewTest(TestCase):
         response = self.client.post(f'/lists/{list_2.id}/')
 
         self.assertEqual(response.context['list_'], list_2)
-
 
 
 class ListAndItemModelTest(TestCase):    

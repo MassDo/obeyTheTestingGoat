@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 
-MAX_WAIT = 2
+MAX_WAIT = 1
 
 class NewVisitorTest(LiveServerTestCase):
 
@@ -126,3 +126,31 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('Use peacock feathers to make a fly', page_text)
         self.assertIn('Buy milk', page_text)
+
+    def test_layout_and_styling(self):
+        # Edith goes to the home page
+        self.brow.get(self.live_server_url)
+        # She notices a nice input box nicely centered 
+        ## Def the windows size in order to calculate the position
+        ## of the inputbox
+        self.brow.set_window_size(1024, 768)
+        inputbox = self.brow.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=10
+        )
+
+        # She adds a new item and press ENTER !
+        inputbox.send_keys('testing item')
+        inputbox.send_keys(Keys.ENTER)
+        # She notices that a new item is printed and
+        # the inputbox is still wonderfully centered ! :)
+        self.wait_for_row_in_list_table('testing item')
+        self.brow.set_window_size(1024, 768)
+        inputbox = self.brow.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=10
+        )
