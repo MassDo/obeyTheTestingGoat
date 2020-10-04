@@ -1,13 +1,13 @@
 import time
 
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 
 MAX_WAIT = 1
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
         """
@@ -128,26 +128,27 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('Buy milk', page_text)
 
     def test_layout_and_styling(self):
-        # Edith goes to the home page
+        # Edith goes to the home page she notice a nicely centered inputbox
         self.brow.get(self.live_server_url)
-        # She notices a nice input box nicely centered 
-        ## Def the windows size in order to calculate the position
-        ## of the inputbox
+        ## define the window's size in order to check if
+        ## the inputbox is centered
         self.brow.set_window_size(1024, 768)
         inputbox = self.brow.find_element_by_id('id_new_item')
+        ## Centered ?
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
             512,
             delta=10
         )
 
-        # She adds a new item and press ENTER !
+        # Then she adds an item to the inputbox and press Enter to validate...
         inputbox.send_keys('testing item')
-        inputbox.send_keys(Keys.ENTER)
-        # She notices that a new item is printed and
-        # the inputbox is still wonderfully centered ! :)
-        self.wait_for_row_in_list_table('testing item')
-        self.brow.set_window_size(1024, 768)
+        inputbox.send_keys(Keys.ENTER) ## => add item and create list via POST 
+                                       ## at /lists/new 
+                                       ## then redirect to /lists/<list_id>/
+        # She sees her item added to the page and the inputbox is still centered !
+        self.wait_for_row_in_list_table('1: testing item')
+        ## new inputbox var because it a new page
         inputbox = self.brow.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
