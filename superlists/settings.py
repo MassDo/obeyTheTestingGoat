@@ -15,17 +15,22 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+if 'DJANGO_DEBUG_FALSE' in os.environ:
+    SECRET_KEY= os.environ['DJANGO_SECRET_KEY']
+    DEBUG = False
+    ALLOWED_HOSTS = os.environ['SITENAME']
+else:
+    # Quick-start development settings - unsuitable for production
+    # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = 'ko$8hp%c$uyb7h1tcq*@8_+l(d+0bls5-#z(9bjhaf7r5%4!li'
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ko$8hp%c$uyb7h1tcq*@8_+l(d+0bls5-#z(9bjhaf7r5%4!li'
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = ['*']
 
 
 # Application definition
