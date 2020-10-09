@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if 'DJANGO_DEBUG_FALSE' in os.environ:
     SECRET_KEY= os.environ['DJANGO_SECRET_KEY']
     DEBUG = False
-    ALLOWED_HOSTS = os.environ['SITENAME']
+    ALLOWED_HOSTS = [os.environ['SITENAME']]
 else:
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
