@@ -40,3 +40,54 @@ Assume we have a user account at /home/username
          ├── .env
          ├── db.sqlite3
          ├── etc
+
+## Provisioning with Fabric:
+
+Server side:
+
+```bash
+sudo apt-get update && sudo apt-get install nginx
+```
+
+Local:
+```python
+fab deploy:host=<USER_NAME>@<YOUR_DOMAIN>
+```
+
+## Deployment: 
+
+Create nginx conf file on server side
+
+```bash
+cat ./deploy_tools/nginx.template.conf && \
+| sed "s/DOMAIN/<YOUR_DOMAIN>/g" && \
+| sed "s/USER_NAME/<YOUR_USER_NAME>/g" && \
+| sudo tee /etc/nginx/sites-available/<YOUR_DOMAIN>
+```
+
+Activate with symbolic link
+
+```bash
+sudo ln -s /etc/nginx/sites-available/<YOUR_DOMAIN> \
+/etc/nginx/sites-enabled/<YOUR_DOMAIN>
+```
+
+Write Systemd service
+
+```bash
+cat ./deploy_tools/gunicorn.systemd.template.service && \
+| sed "s/DOMAIN/<YOUR_DOMAIN>/g" && \
+| sed "s/USER_NAME/<YOUR_USER_NAME>/g" && \
+| sed "s/PROJECT_NAME/<PROJECT_NAME>/g" && \
+| sudo tee /etc/systemd/system/gunicorn-<YOUR_DOMAIN>.service
+```
+
+Start both services
+
+```bash
+sudo systemctl daemon-reload && \
+sudo systemctl reload nginx && \
+sudo systemctl enable gunicorn-<YOUR_DOMAIN>.service && \
+sudo systemctl start gunicorn-<YOUR_DOMAIN>.service
+```
+
