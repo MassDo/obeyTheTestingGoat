@@ -2,3 +2,4 @@ static/
 db.sqlite3
 geckodriver.log
 .env
+/deploy_tools/supp.txt

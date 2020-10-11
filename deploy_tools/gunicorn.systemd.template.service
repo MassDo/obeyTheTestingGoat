@@ -7,9 +7,9 @@ User=USER_NAME
 WorkingDirectory=/home/USER_NAME/sites/DOMAIN
 EnvironmentFile=/home/USER_NAME/sites/DOMAIN/.env
 
-ExecStart=pipenv run \
-        --bin unix:/tmp/DOMAIN.socket \
+ExecStart=/home/USER_NAME/sites/DOMAIN/.venv/bin/gunicorn \
+        --bind unix:/tmp/DOMAIN.socket \
         PROJECT_NAME.wsgi:application
 
 [Install]
-WanterBy=multi-user.target
+WantedBy=multi-user.target

@@ -5,7 +5,7 @@ Provisioning a new site
 
 * nginx
 * Python 3.6
-* pipenv
+* pip
 * Git
 
 eg, on Ubuntu:
@@ -28,6 +28,7 @@ eg, on Ubuntu:
 
 Assume we have a user account at /home/username
 
+```
 /home/username
 └── sites
     ├── DOMAIN1
@@ -40,6 +41,7 @@ Assume we have a user account at /home/username
          ├── .env
          ├── db.sqlite3
          ├── etc
+```
 
 ## Provisioning with Fabric:
 
@@ -59,9 +61,9 @@ fab deploy:host=<USER_NAME>@<YOUR_DOMAIN>
 Create nginx conf file on server side
 
 ```bash
-cat ./deploy_tools/nginx.template.conf && \
-| sed "s/DOMAIN/<YOUR_DOMAIN>/g" && \
-| sed "s/USER_NAME/<YOUR_USER_NAME>/g" && \
+cat ./deploy_tools/nginx.template.conf \
+| sed "s/DOMAIN/<YOUR_DOMAIN>/g" \
+| sed "s/USER_NAME/<YOUR_USER_NAME>/g" \
 | sudo tee /etc/nginx/sites-available/<YOUR_DOMAIN>
 ```
 
@@ -75,10 +77,10 @@ sudo ln -s /etc/nginx/sites-available/<YOUR_DOMAIN> \
 Write Systemd service
 
 ```bash
-cat ./deploy_tools/gunicorn.systemd.template.service && \
-| sed "s/DOMAIN/<YOUR_DOMAIN>/g" && \
-| sed "s/USER_NAME/<YOUR_USER_NAME>/g" && \
-| sed "s/PROJECT_NAME/<PROJECT_NAME>/g" && \
+cat ./deploy_tools/gunicorn.systemd.template.service \
+| sed "s/DOMAIN/<YOUR_DOMAIN>/g" \
+| sed "s/USER_NAME/<YOUR_USER_NAME>/g" \
+| sed "s/PROJECT_NAME/<PROJECT_NAME>/g" \
 | sudo tee /etc/systemd/system/gunicorn-<YOUR_DOMAIN>.service
 ```
 
